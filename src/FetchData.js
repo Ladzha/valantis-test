@@ -1,56 +1,81 @@
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { md5 } from 'js-md5';
+
+import {URL_FIRST, URL_SECOND, headers} from './fetchProperties.js'
+
 
 export default async function FetchData(){
 
-  const url ='http://api.valantis.store:40000/';
-  const password = 'Valantis';
-  const timestamp =new Date().toISOString().slice(0, 10).replace(/-/g,'');
+  const [filterBrand, setFilterBrand] = useState(null);
+  const [filterName, setFilterName] = useState('');
+  const [filterPrice, setFilterPrice] = useState(0);
 
-  const string = `${password}_${timestamp}`
-  const xAuth = md5(string)
-  
-  const headers = {
-    'X-Auth': xAuth,
-    'Content-Type': 'application/json'
-  };
+  let idList =[];
 
-  const paramsFilter = {
+  let nameValue = "Золотое колье";
+  let brandValue = 'Baraka';
+  let priceValue = 16500.0;
+
+  // setFilterName(nameValue)
+  // setFilterBrand(brandValue)
+  // setFilterPrice(priceValue)
+
+  const paramsPriceFilter = {
     "action": "filter",
-    "params": {"price": 16500.0}
+    "params": {"price": filterPrice}
+  }
+  const paramsNameFilter = {
+    "action": "filter",
+    "params": {"name": nameValue}
+  }
+  const paramsBrandFilter = {
+    "action": "filter",
+    "params": {"brand": brandValue}
   }
 
-  const params = {
+  const paramsId = {
     "action": "get_ids",
-    "params": {"limit": 5}
+    "params": {
+      "offset": 1,
+      "limit": 5
+    }
   };
-
-  let arrId = [];
 
   try {
-    const responseFilter = await axios.post(url, paramsFilter, {headers})
-    const responseId = await axios.post(url, params, {headers})
+    // const responseFilter = await axios.post(URL_FIRST, paramsBrandFilter, {headers})
+    // responseFilter.data.result.map((item)=>idList.push(item))
 
-    // responseFilter.data.result.map((item)=>arrId.push(item))
-    responseId.data.result.map((itemId)=>arrId.push(itemId))
+    const responseId = await axios.post(URL_FIRST, paramsId, {headers})
 
-    const paramsItem = {
-      "action": "get_items",
-      "params": {"ids": arrId }
-    };
+    console.log(responseId.data.result);
 
-    const responseItem = await axios.post(url, paramsItem, {headers})
-
-    responseItem.data.result.map((item)=>{
-      console.log('From FetchData PRODUCT INFO => ', 
-      'ID => ', item.id, 
-      'PRODUCT => ', item.product,
-      'PRICE => ', item.price,
-      'BRAND => ', item.brand)
-    })
-
+    if(responseId.data.result.length > 0){
+      responseId.data.result.map((itemId)=>idList.push(itemId))
+      console.log(responseId.data.result);
+    }else{
+      console.log('Список Id не получен');
+    }
+   
+    if(idList.length > 0){
+      const paramsItem = {
+        "action": "get_items",
+        "params": {"ids": idList }
+      };  
+      const responseItem = await axios.post(URL_FIRST, paramsItem, {headers})
+      if(responseItem){
+        responseItem.data.result.map((item)=>{
+          console.log('From FetchData PRODUCT INFO => ', 
+          'ID => ', item.id, 
+          'PRODUCT => ', item.product,
+          'PRICE => ', item.price,
+          'BRAND => ', item.brand)
+        })
+      }else{
+        console.log('Список товаров не получен')
+      }
+    }
   } catch (error) {
-    console.log('Что-то пошло не так...');
+    console.log(error.message);
   }
-  return(FetchData)
+
 }

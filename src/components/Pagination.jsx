@@ -1,36 +1,27 @@
 import React, {useState} from 'react'
+import { Pagination as PaginationElement} from '@mui/material';
 
-const Pagination = ({onPrevClick, onNextClick}) => {
+const Pagination = ({onPageChange}) => {
 
-  // const [pageNumber, setPageNumber] = useState()
+  const [pageQuantity, setPageQuantity] = useState(10)
+  const [currentPage, setCurrentPage] = useState(1)
 
-  const handlePrev=()=>{
-    onPrevClick()
-  }
-
-  const handleNext=()=>{
-    onNextClick()
+  const handleChange=(event, value)=>{
+    setCurrentPage(value)
+    onPageChange()
+    console.log(currentPage);
   }
 
   return (
     <div className="pagination-container">
-      <button 
-      disabled
-      type="button"
-      className="button left"
-      onClick={()=>{onPrevClick()}}
-      >
-      {'<'}
-      </button>
-      <button 
-      type="button"
-      className="button right"
-      onClick={handleNext}
-      >
-      {'>'}
-      </button>
+      <PaginationElement 
+      count={pageQuantity} 
+      shape="rounded"
+      showFirstButton  
+      showLastButton 
+      onChange={handleChange} />
     </div>
   )
 }
 
-export default Pagination 
+export default Pagination

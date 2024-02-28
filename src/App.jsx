@@ -1,32 +1,31 @@
 import { useState } from 'react';
 import ProductList from './components/ProductList';
-import Pagination from './components/Pagination';
+import Pagination from './components/Pagination.jsx';
 import useProduct from './hooks/useProduct.js';
 import Loading from './components/Loading.jsx';
 import Filter from './components/Filter.jsx';
 import './App.css';
-import FetchData from './FetchData.js'
 
 function App() {
 
   const { products, isLoading, error } = useProduct()
 
-  const handlePrevPageClick=()=>{
-    console.log('handlePrevPage');
+  const handlePageChange=()=>{
+    console.log('handlePageChange');
   }
 
-  const handleNextPageClick=()=>{
-    console.log('handlePrevPage');
+  const handleFilterChange=()=>{
+    console.log('handleFilterChange');
   }
-  FetchData()
+
   return (
     <main className="main">
       <h1 className='main-title'>Наши продукты</h1>
       {isLoading && <Loading/>}
-      {!isLoading && <>
-      <Filter/>
+      {!isLoading && Boolean(products.length) && <>
+      <Filter onFilterChange ={handleFilterChange}/>
       <ProductList products={products}/>
-      <Pagination onPrevClick={handlePrevPageClick} onNextClick={handleNextPageClick}/>
+      <Pagination onPageChange={handlePageChange}/>
       </>}
     </main>
   )

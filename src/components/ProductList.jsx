@@ -5,9 +5,9 @@ const ProductList = ({products}) => {
     <section className="product-container">
       {Boolean(products.length) && products.map((product)=>(
         <ProductCard 
-        key={`${product.id}/${product.name}`}
+        key={`${product.id}/${product.product}`}
         id={product.id}
-        name={product.title}
+        name={product.product}
         price={product.price}
         brand={product.brand}
         />
