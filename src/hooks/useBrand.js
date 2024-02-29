@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback} from 'react';
-import {URL_FIRST, URL_SECOND, headers} from  '../fetchProperties.js'
+import {URL_FIRST, headers} from  '../fetchProperties.js'
 import axios from 'axios';
 
 export default function useBrand(){
@@ -34,18 +34,13 @@ export default function useBrand(){
       setError('')
       setIsLoading(true)
 
-      const responseBrandFirstPart = await axios.post(URL_FIRST, paramsFieldBrand, {headers})
-      const responseBrandSecondPart = await axios.post(URL_SECOND, paramsFieldBrand, {headers})
+      const responseBrands = await axios.post(URL_FIRST, paramsFieldBrand, {headers})
 
-      if(responseBrandFirstPart){
-        responseBrandFirstPart.data.result.map((brand)=>getAllBrands(brand))
-      }
-      if(responseBrandSecondPart){
-        responseBrandSecondPart.data.result.map((brand)=>getAllBrands(brand))
-      }
-
-      if(allBrands.length > 0){
-        setBrands(allBrands)
+      if(responseBrands){
+        responseBrands.data.result.map((brand)=>getAllBrands(brand))
+        if(allBrands.length > 0){
+          setBrands(allBrands)
+        }
       }else{
         console.log('Список брендов не получен')
       }   
@@ -61,9 +56,7 @@ export default function useBrand(){
 
   useEffect(()=>{
     fetchData()
-    console.log('brands', brands);
-
-  }, [fetchData])
+  }, [])
 
   return { brands, isLoading, error}
 }

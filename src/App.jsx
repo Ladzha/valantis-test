@@ -7,26 +7,44 @@ import Filter from './components/Filter.jsx';
 import './App.css';
 
 function App() {
+  
+  const [filterBrand, setFilterBrand] = useState('');
 
-  const { products, isLoading, error } = useProduct()
+  const { products, isLoading, error } = useProduct(filterBrand)
 
   const handlePageChange=()=>{
     console.log('handlePageChange');
   }
 
-  const handleFilterChange=()=>{
-    console.log('handleFilterChange');
+  const handleNameChange=(name)=>{
+    console.log('handleNameChange', name);
   }
+
+  const handlePriceChange=(price)=>{
+    console.log('handlePriceChange', price);
+  }
+
+  const handleBrandChange=(brand)=>{
+    // setFilterBrand(brand)
+    console.log('handleBrandChange', brand);
+  }
+
+  console.log('YA IS MAIN');
 
   return (
     <main className="main">
       <h1 className='main-title'>Наши продукты</h1>
+       <Filter 
+        onBrandChange={handleBrandChange}
+        onNameChange={handleNameChange}
+        onPriceChange={handlePriceChange}
+        />
       {isLoading && <Loading/>}
       {!isLoading && Boolean(products.length) && <>
-      <Filter onFilterChange ={handleFilterChange}/>
       <ProductList products={products}/>
       <Pagination onPageChange={handlePageChange}/>
-      </>}
+      </>
+      }
     </main>
   )
 }
