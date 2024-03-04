@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ProductList from './components/ProductList';
 import Pagination from './components/Pagination.jsx';
 import useProduct from './hooks/useProduct.js';
+
 import Loading from './components/Loading.jsx';
 import Filter from './components/Filter.jsx';
 import './App.css';
@@ -9,43 +10,53 @@ import './App.css';
 function App() {
   
   const [filterBrand, setFilterBrand] = useState('');
+  const [filterName, setFilterName] = useState('');
+  const [filterPrice, setFilterPrice] = useState([null, null]);
+  const [page, setPage] = useState(1);
+  const [activePage, setActivePage] = useState(1);
 
-  const { products, isLoading, error } = useProduct(filterBrand)
 
-  const handlePageChange=()=>{
-    console.log('handlePageChange');
-  }
-
-  const handleNameChange=(name)=>{
-    console.log('handleNameChange', name);
-  }
-
-  const handlePriceChange=(price)=>{
-    console.log('handlePriceChange', price);
-  }
 
   const handleBrandChange=(brand)=>{
-    // setFilterBrand(brand)
-    console.log('handleBrandChange', brand);
+    setFilterBrand(brand)
   }
 
-  console.log('YA IS MAIN');
+  const { products, isLoading } = useProduct(filterBrand, filterName, filterPrice, activePage)
+
+  const handleSearchChange=(searchValue)=>{
+    setFilterName(searchValue)
+  }
+
+  const handlePriceChange=(filterPrice)=>{
+    setFilterPrice(filterPrice)
+    console.log('filterPrice', filterPrice);
+  }
+
+  const handlePageChange=(page)=>{
+    console.log('handlePageChange');
+  }
+  // console.log('YA IS MAIN');
 
   return (
-    <main className="main">
-      <h1 className='main-title'>Наши продукты</h1>
-       <Filter 
+    <div className='page'>  
+      <aside className='aside'>
+      <Filter 
         onBrandChange={handleBrandChange}
-        onNameChange={handleNameChange}
+        onSearchChange={handleSearchChange}
         onPriceChange={handlePriceChange}
         />
-      {isLoading && <Loading/>}
-      {!isLoading && Boolean(products.length) && <>
-      <ProductList products={products}/>
-      <Pagination onPageChange={handlePageChange}/>
-      </>
-      }
-    </main>
+      </aside>  
+      <main className="main">
+        <h1 className='main-title'>Товары</h1>
+        {isLoading && <Loading/>}
+        {!isLoading && Boolean(products.length) && <>
+        <ProductList products={products}/>
+        {products.length > 50 ?
+        <Pagination onPageChange={handlePageChange}/>
+        : null} </>}
+      </main>
+    </div>
+
   )
 }
 

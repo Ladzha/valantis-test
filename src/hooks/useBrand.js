@@ -4,8 +4,6 @@ import axios from 'axios';
 
 export default function useBrand(){
   const [brands, setBrands ] = useState([]);
-  const [isLoading, setIsLoading ] = useState(false);
-  const [error, setError] = useState('');
 
   const paramsFieldBrand = {
     "action": "get_fields",
@@ -31,9 +29,6 @@ export default function useBrand(){
   const fetchData = useCallback(async()=>{
 
     try {
-      setError('')
-      setIsLoading(true)
-
       const responseBrands = await axios.post(URL_FIRST, paramsFieldBrand, {headers})
 
       if(responseBrands){
@@ -41,16 +36,10 @@ export default function useBrand(){
         if(allBrands.length > 0){
           setBrands(allBrands)
         }
-      }else{
-        console.log('Список брендов не получен')
-      }   
-      setIsLoading(false)
+      }
 
     } catch (error) {
-      const fetchError = error
-      setIsLoading(false)
-      setError(fetchError.message)
-      console.log(fetchError.message);
+      console.log(error.message);
     }
   }, [])
 
@@ -58,5 +47,5 @@ export default function useBrand(){
     fetchData()
   }, [])
 
-  return { brands, isLoading, error}
+  return { brands }
 }
