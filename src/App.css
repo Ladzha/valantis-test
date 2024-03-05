@@ -52,6 +52,7 @@ select{
 .main-title{
   padding-top: 1rem;
   font-size: clamp(1.5rem, calc(1.21rem + 1.46vw), 2.25rem);
+  margin-bottom: 0;
 }
 .filter-container{
   display:flex;

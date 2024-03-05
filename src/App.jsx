@@ -11,7 +11,7 @@ function App() {
   
   const [filterBrand, setFilterBrand] = useState('');
   const [filterName, setFilterName] = useState('');
-  const [filterPrice, setFilterPrice] = useState([null, null]);
+  const [filterPrice, setFilterPrice] = useState([]);
   const [page, setPage] = useState(1);
   const [activePage, setActivePage] = useState(1);
 
@@ -29,7 +29,7 @@ function App() {
 
   const handlePriceChange=(filterPrice)=>{
     setFilterPrice(filterPrice)
-    console.log('filterPrice', filterPrice);
+    // console.log('filterPrice', filterPrice);
   }
 
   const handlePageChange=(page)=>{
@@ -48,6 +48,8 @@ function App() {
       </aside>  
       <main className="main">
         <h1 className='main-title'>Товары</h1>
+        {products.length > 0 && <p>{products.length} наименований</p>}
+        
         {isLoading && <Loading/>}
         {!isLoading && Boolean(products.length) && <>
         <ProductList products={products}/>
