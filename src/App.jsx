@@ -11,54 +11,60 @@ function App() {
   
   const [filterBrand, setFilterBrand] = useState('');
   const [filterName, setFilterName] = useState('');
-  const [filterPrice, setFilterPrice] = useState([]);
-  const [page, setPage] = useState(1);
-  const [activePage, setActivePage] = useState(1);
+  const [filterPrice, setFilterPrice] = useState(null);
 
+  const [totalPages, setTotalPages] = useState(161);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [cardCounter, setCardCounter] = useState(1);
 
 
   const handleBrandChange=(brand)=>{
     setFilterBrand(brand)
   }
-
-  const { products, isLoading } = useProduct(filterBrand, filterName, filterPrice, activePage)
+  const { products, isLoading } = useProduct(filterBrand, filterName, filterPrice, currentPage)
 
   const handleSearchChange=(searchValue)=>{
     setFilterName(searchValue)
   }
-
   const handlePriceChange=(filterPrice)=>{
     setFilterPrice(filterPrice)
     // console.log('filterPrice', filterPrice);
   }
-
-  const handlePageChange=(page)=>{
-    console.log('handlePageChange');
+  const handlePageClick=(_, num)=>{
+    setCurrentPage(num)
   }
-  // console.log('YA IS MAIN');
 
+  const handleCardCounter=(counter)=>{
+    setCardCounter(counter)
+  }
   return (
     <div className='page'>  
-      <aside className='aside'>
+      <div className='filter-container'>
       <Filter 
         onBrandChange={handleBrandChange}
         onSearchChange={handleSearchChange}
         onPriceChange={handlePriceChange}
         />
-      </aside>  
+      </div>  
       <main className="main">
         <h1 className='main-title'>Товары</h1>
-        {products.length > 0 && <p>{products.length} наименований</p>}
-        
+        {products.length > 0 && <p>{products.length} + {cardCounter} наименований</p>}      
         {isLoading && <Loading/>}
         {!isLoading && Boolean(products.length) && <>
-        <ProductList products={products}/>
-        {products.length > 50 ?
-        <Pagination onPageChange={handlePageChange}/>
+        <ProductList 
+        products={products}
+        cardCounter={cardCounter}
+        onCardCount={handleCardCounter}/>
+        {products.length > 1 ?
+        <Pagination 
+        totalPages={totalPages}
+        // totalPages={Math.ceil(products.length / 10)}
+        currentPage={currentPage}
+        onPageClick={handlePageClick}
+        />
         : null} </>}
       </main>
     </div>
-
   )
 }
 

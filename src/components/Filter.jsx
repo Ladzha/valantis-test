@@ -13,13 +13,23 @@ const Filter = ({onBrandChange, onSearchChange, onPriceChange}) => {
   const brandSelect = useRef(null)
 
   const handleFilter=()=>{
-    onBrandChange(brandSelect.current.value)
-    onSearchChange(searchInput.current.value.toLowerCase())
-    onPriceChange(getPriceRange(priceMinInput.current.value, priceMaxInput.current.value))
-    // brandSelect.current.value='';
-    // searchInput.current.value='';
-    // priceMinInput.current.value=null;
-    // priceMaxInput.current.value=null;
+    if(!searchInput && !priceMinInput && !priceMaxInput && !brandSelect){
+      console.log('primer');
+
+    }else{
+      onBrandChange(brandSelect.current.value)
+      onSearchChange(searchInput
+        // .current.value.toLowerCase()
+        )
+      onPriceChange(getPriceRange(priceMinInput.current.value, priceMaxInput.current.value))
+    }
+  }
+
+  const reset=()=>{
+    brandSelect.current.value='';
+    searchInput.current.value='';
+    priceMinInput.current.value=null;
+    priceMaxInput.current.value=null;
   }
 
   function getPriceRange(min, max){
@@ -38,11 +48,10 @@ const Filter = ({onBrandChange, onSearchChange, onPriceChange}) => {
 
   return (
     <>
-    <fieldset className='filter-container'>
+    <fieldset className='filter'>
       <legend>Фильтровать</legend>
       <input type="text" 
       id='search'
-      autoFocus
       placeholder={"Поиск"} 
       ref={searchInput}
       />
@@ -71,6 +80,8 @@ const Filter = ({onBrandChange, onSearchChange, onPriceChange}) => {
             brands.map((brand)=><option key={brand} value={brand}>{brand}</option>)}
         </select> 
         <button onClick={handleFilter}>Применить</button>
+        <button onClick={reset} className='reset'>Сбросить</button>
+
       </fieldset>
     </>
   )

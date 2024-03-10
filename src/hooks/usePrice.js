@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback} from 'react';
-import {URL_FIRST, headers} from  '../fetchProperties.js'
+import {URL_FIRST, headers} from  '../utils/fetchProperties.js'
 import axios from 'axios';
 
 export default function usePrice(){
