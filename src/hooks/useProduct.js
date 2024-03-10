@@ -42,7 +42,6 @@ export default function useProduct(filterBrand, filterName, filterPrice, current
           }
         }
       }    
-      // console.log('getPriceSetIdList =>', priceSetIdList);
       return priceSetIdList
     }catch (error) {
       console.log(error.message);
