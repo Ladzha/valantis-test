@@ -1,11 +1,12 @@
 import ProductCard from './ProductCard'
 
-const ProductList = ({products, cardCounter, onCardCount}) => {
+const ProductList = ({products}) => {
+  let cardCounter =1;
   return (
     <section className="product-container">
       {Boolean(products.length) && products.map((product)=>{
         cardCounter++;
-        if(cardCounter < 50){
+        if(cardCounter < 200){
         return(
           <ProductCard 
           key={`${product.id}/${product.product}`}

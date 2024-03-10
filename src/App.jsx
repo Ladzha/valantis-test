@@ -15,13 +15,11 @@ function App() {
 
   const [totalPages, setTotalPages] = useState(161);
   const [currentPage, setCurrentPage] = useState(1);
-  const [cardCounter, setCardCounter] = useState(1);
-
 
   const handleBrandChange=(brand)=>{
     setFilterBrand(brand)
   }
-  const { products, isLoading } = useProduct(filterBrand, filterName, filterPrice, currentPage)
+  const { products, isLoading } = useProduct(filterBrand, filterName, filterPrice, currentPage, setTotalPages)
 
   const handleSearchChange=(searchValue)=>{
     setFilterName(searchValue)
@@ -34,9 +32,6 @@ function App() {
     setCurrentPage(num)
   }
 
-  const handleCardCounter=(counter)=>{
-    setCardCounter(counter)
-  }
   return (
     <div className='page'>  
       <div className='filter-container'>
@@ -48,17 +43,15 @@ function App() {
       </div>  
       <main className="main">
         <h1 className='main-title'>Товары</h1>
-        {products.length > 0 && <p>{products.length} + {cardCounter} наименований</p>}      
+        {products.length > 0}      
         {isLoading && <Loading/>}
         {!isLoading && Boolean(products.length) && <>
         <ProductList 
         products={products}
-        cardCounter={cardCounter}
-        onCardCount={handleCardCounter}/>
-        {products.length > 1 ?
+        setTotalPages={setTotalPages}/>
+        {totalPages > 1 ?
         <Pagination 
         totalPages={totalPages}
-        // totalPages={Math.ceil(products.length / 10)}
         currentPage={currentPage}
         onPageClick={handlePageClick}
         />

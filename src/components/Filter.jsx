@@ -13,16 +13,9 @@ const Filter = ({onBrandChange, onSearchChange, onPriceChange}) => {
   const brandSelect = useRef(null)
 
   const handleFilter=()=>{
-    if(!searchInput && !priceMinInput && !priceMaxInput && !brandSelect){
-      console.log('primer');
-
-    }else{
-      onBrandChange(brandSelect.current.value)
-      onSearchChange(searchInput
-        // .current.value.toLowerCase()
-        )
-      onPriceChange(getPriceRange(priceMinInput.current.value, priceMaxInput.current.value))
-    }
+    onBrandChange(brandSelect.current.value)
+    onSearchChange(searchInput.current.value.toLowerCase())
+    onPriceChange(getPriceRange(priceMinInput.current.value, priceMaxInput.current.value))
   }
 
   const reset=()=>{
