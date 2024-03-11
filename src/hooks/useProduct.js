@@ -38,11 +38,33 @@ export default function useProduct(filterBrand, filterName, filterPrice, current
           } 
           const responseFilteredByPriceId = await axios.post(URL_FIRST, paramsPriceFilter, {headers})
           if(responseFilteredByPriceId.data.result.length > 0){
-            responseFilteredByPriceId.data.result.map((itemId)=>getPriceSetIdList(itemId))
+            responseFilteredByPriceId.data.result.map((itemId)=>
+            getPriceSetIdList(itemId))
           }
         }
       }    
+      console.log('priceSetIdList', priceSetIdList);
       return priceSetIdList
+    }catch (error) {
+      console.log(error.message);
+    }
+  }, [])
+
+  const fetchPriceRangeIdsFull = useCallback(async(filterPrice)=>{
+
+    try {
+      //Getting ids set filtered by price name and push it to id list
+      if(filterPrice){
+        for(let i = 0; i < filterPrice.length; i++){
+          let paramsPriceFilter = {
+            "action": "filter",
+            "params": {"price": filterPrice[i]}
+          } 
+          const responseFilteredByPriceId = await axios.post(URL_FIRST, paramsPriceFilter, {headers})
+          if(responseFilteredByPriceId.data.result.length > 0){
+            responseFilteredByPriceId.data.result.map((itemId)=>getIdList(itemId))}
+        }    
+      }
     }catch (error) {
       console.log(error.message);
     }
@@ -54,7 +76,7 @@ export default function useProduct(filterBrand, filterName, filterPrice, current
       setIsLoading(true)
 
       //Getting ids set filtered id list
-      if(filterBrand || filterName || filterPrice?.length > 0){
+      if(filterBrand || filterName || (filterPrice && filterPrice.length > 0)){
 
           const paramsNameFilter = {
             "action": "filter",
@@ -77,13 +99,13 @@ export default function useProduct(filterBrand, filterName, filterPrice, current
 
             const responseFilteredByBrandId = await axios.post(URL_FIRST, paramsBrandFilter, {headers})
 
-            const responseFilteredByPricedId = await fetchPriceRangeIds(filterPrice)
+            const responseFilteredByPriceId = await fetchPriceRangeIds(filterPrice)
 
             if(responseFilteredByNameId.data.result.length > 0 &&
-              responseFilteredByBrandId.data.result.length > 0 && responseFilteredByPricedId.length > 0){
+              responseFilteredByBrandId.data.result.length > 0 && responseFilteredByPriceId.length > 0){
               const uniqNameIds = removeDuplicateId(responseFilteredByNameId.data.result)
               const uniqBrandIds = removeDuplicateId(responseFilteredByBrandId.data.result)
-              const uniqPriceIds = removeDuplicateId(responseFilteredByPricedId)
+              const uniqPriceIds = removeDuplicateId(responseFilteredByPriceId)
                 
               const totalIds = getCommonInThreeArrays(uniqNameIds, uniqBrandIds, uniqPriceIds)
 
@@ -118,10 +140,10 @@ export default function useProduct(filterBrand, filterName, filterPrice, current
 
             const responseFilteredByBrandId = await axios.post(URL_FIRST, paramsBrandFilter, {headers})
 
-            const responseFilteredByPricedId = await fetchPriceRangeIds(filterPrice)
+            const responseFilteredByPriceId = await fetchPriceRangeIds(filterPrice)
 
-            if(responseFilteredByBrandId.data.result.length > 0 && responseFilteredByPricedId.length > 0){
-              const uniqPriceIds = removeDuplicateId(responseFilteredByPricedId)
+            if(responseFilteredByBrandId.data.result.length > 0 && responseFilteredByPriceId.length > 0){
+              const uniqPriceIds = removeDuplicateId(responseFilteredByPriceId)
               const uniqBrandIds = removeDuplicateId(responseFilteredByBrandId.data.result)
               
               const totalIds = getCommonInTwoArrays(uniqPriceIds, uniqBrandIds)
@@ -135,10 +157,10 @@ export default function useProduct(filterBrand, filterName, filterPrice, current
           if(!filterBrand && filterName && filterPrice.length > 0){
             const responseFilteredByNameId = await axios.post(URL_FIRST, paramsNameFilter, {headers});
 
-            const responseFilteredByPricedId = await fetchPriceRangeIds(filterPrice)
+            const responseFilteredByPriceId = await fetchPriceRangeIds(filterPrice)
 
-            if(responseFilteredByNameId.data.result.length > 0 && responseFilteredByPricedId.length > 0){
-              const uniqPriceIds = removeDuplicateId(responseFilteredByPricedId)
+            if(responseFilteredByNameId.data.result.length > 0 && responseFilteredByPriceId.length > 0){
+              const uniqPriceIds = removeDuplicateId(responseFilteredByPriceId)
               const uniqNameIds = removeDuplicateId(responseFilteredByNameId.data.result)
               
               const totalIds = getCommonInTwoArrays(uniqPriceIds, uniqNameIds)
@@ -174,12 +196,16 @@ export default function useProduct(filterBrand, filterName, filterPrice, current
           //PRICE 
           //and push it to id list
           if(filterPrice.length > 0 && !filterBrand && !filterName){
-            const responseFilteredByPricedId = await fetchPriceRangeIds(filterPrice)
-            if(responseFilteredByPricedId.length > 0){
-              const uniqIds = removeDuplicateId(responseFilteredByPricedId)
-              uniqIds.map((itemId)=>getIdList(itemId))
-              setTotalPages(Math.ceil(uniqIds.length / 50))
-            }            
+            if(filterPrice.length > 0){
+              await fetchPriceRangeIdsFull(filterPrice)
+              setTotalPages(Math.ceil(idList.length / 50))
+            }
+            // const responseFilteredByPriceId = await fetchPriceRangeIds(filterPrice)
+            // if(responseFilteredByPriceId.length > 0){
+            //   const uniqIds = removeDuplicateId(responseFilteredByPriceId)
+            //   uniqIds.map((itemId)=>getIdList(itemId))
+            //   setTotalPages(Math.ceil(uniqIds.length / 50))
+            // }            
           }
 
       }else{
@@ -235,8 +261,8 @@ export default function useProduct(filterBrand, filterName, filterPrice, current
 
   useEffect(()=>{
     fetchData(filterBrand, filterName, filterPrice, currentPage)
-
-  }, [fetchData, filterBrand, filterName, filterPrice, currentPage])
+console.log('FETCH');
+  }, [filterBrand, filterName, filterPrice, currentPage])
 
   return { products, isLoading, error}
 }
