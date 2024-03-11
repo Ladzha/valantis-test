@@ -261,7 +261,6 @@ export default function useProduct(filterBrand, filterName, filterPrice, current
 
   useEffect(()=>{
     fetchData(filterBrand, filterName, filterPrice, currentPage)
-console.log('FETCH');
   }, [filterBrand, filterName, filterPrice, currentPage])
 
   return { products, isLoading, error}
